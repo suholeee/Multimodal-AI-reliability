@@ -1,0 +1,18 @@
+V2 contradiction sweep summary
+profile=debug mode=full image_model=hybrid
+contradiction_strengths=0.00,0.50,1.00 modality_asymmetries=+0.00
+seeds=21
+
+Aggregate findings
+- strongest tested regime: cs=1.00, asym=+0.00
+- strongest regime contradiction: disagreement=0.317 +/- 0.000, strong_structural=0.233 +/- 0.000
+- strongest regime accuracies: image=0.567, genomic=0.750, late=0.750, learned=0.767, best_policy=0.767
+- strongest regime regret: learned=0.067, best_policy=0.067, oracle=0.817
+- largest policy gain over learned fusion: 0.000 at cs=0.00, asym=+0.00
+- policy beats learned fusion in 0 / 3 settings
+- abstention at strongest regime: fixed coverage=0.433, selective_accuracy=0.885, selective_accuracy@0.90=0.778
+
+Interpretation
+- The sweep should be read as a controlled study of when disagreement becomes common, when regret rises, and whether simple policies recover avoidable fusion mistakes.
+- If strong structural contradiction remains low even at high contradiction strength, that is a real negative finding rather than a failed run.
+- Best-policy values are descriptive maxima over the implemented full-coverage policies; deployable policy selection should still be validated separately.

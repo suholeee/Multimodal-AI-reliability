@@ -1,0 +1,20 @@
+V2 validation gate
+criteria: image@cs1>=0.60, genomic@cs1>=0.60, conf>=0.70 contradiction>=0.05, correctness split<=0.70/0.30
+
+cs=0.00 image=0.483 genomic=0.583 late=0.583 learned=0.567 best_policy=0.567 policy_gain=0.000
+  disagreement=0.567 conf>=0.60=0.000 split=0.000/0.000
+  conf>=0.70=0.000 split=0.000/0.000
+cs=0.50 image=0.433 genomic=0.650 late=0.650 learned=0.583 best_policy=0.583 policy_gain=0.000
+  disagreement=0.450 conf>=0.60=0.000 split=0.000/0.000
+  conf>=0.70=0.000 split=0.000/0.000
+cs=1.00 image=0.583 genomic=0.550 late=0.583 learned=0.517 best_policy=0.517 policy_gain=0.000
+  disagreement=0.167 conf>=0.60=0.000 split=0.000/0.000
+  conf>=0.70=0.000 split=0.000/0.000
+
+Gate checks
+- image accuracy at cs=1.0: FAIL (0.583 >= 0.600)
+- genomic accuracy at cs=1.0: FAIL (0.550 >= 0.600)
+- conf>=0.70 contradiction rate at cs=1.0: FAIL (0.000 >= 0.050)
+- conf>=0.70 contradiction balance at cs=1.0: FAIL (nan <= 0.700)
+
+validation_pass=False

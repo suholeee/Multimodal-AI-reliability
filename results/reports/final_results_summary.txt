@@ -1,0 +1,19 @@
+Configuration: mode=safety, image_model=hybrid, seeds=[21, 22, 23, 24, 25], epochs=45, min_epochs=15
+
+Unimodal performance
+- image: 0.655 ± 0.042
+- genomic: 0.740 ± 0.047
+
+Fusion result
+- best fusion variant: fusion_frozen
+- fusion_frozen: 0.760 ± 0.034
+- genomic baseline: 0.740 ± 0.047
+
+Contradiction statistics
+- any disagreement: 0.308
+- conf>=0.60 disagreement: 0.055
+- conf>=0.70 disagreement: 0.003
+- conf>=0.75 disagreement: 0.002
+
+Key conclusion
+fusion provides modest gain in weak-contradiction regime

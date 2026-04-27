@@ -1,0 +1,40 @@
+V2 observability pass: archived negative result
+
+Date
+- 2026-04-21
+
+Scope
+- Targeted V2-only observability refinement.
+- Kept the balanced shared-latent label mechanism.
+- Did not modify the V1 baseline path.
+- Stopped after the validation gate; no full sweep was run.
+
+Motivation
+- The prior V2 validation preserved branch signal at `cs=1.0` but still produced zero confident contradiction.
+- The goal of this pass was to make the contradiction axis more observable in each branch as coherent opposing evidence rather than weak disagreement.
+
+Changes attempted
+- First pass: strengthened V2 latent-to-observable mapping in `src/v2_regime.py` so the contradiction axis more strongly affected image-local pathology and genomic distal structure.
+- Fallback pass: added light V2-only observable tuning in `src/v2_regime.py`:
+  - sharper V2 render overrides for local image detail
+  - small V2-only distal emphasis in the contact-map construction path
+
+Validation outcome
+- Final gate result: `validation_pass=False`
+- Saved outputs:
+  - `results/v2/reports/v2_validation_report.txt`
+  - `results/v2/tables/v2_validation_metrics.csv`
+
+Final gate metrics
+- `cs=0.00`: image `0.483`, genomic `0.583`, late `0.583`, learned `0.567`, best policy `0.567`, disagreement `0.567`, `conf>=0.60` contradiction `0.000`, `conf>=0.70` contradiction `0.000`
+- `cs=0.50`: image `0.433`, genomic `0.650`, late `0.650`, learned `0.583`, best policy `0.583`, disagreement `0.450`, `conf>=0.60` contradiction `0.000`, `conf>=0.70` contradiction `0.000`
+- `cs=1.00`: image `0.583`, genomic `0.550`, late `0.583`, learned `0.517`, best policy `0.517`, disagreement `0.167`, `conf>=0.60` contradiction `0.000`, `conf>=0.70` contradiction `0.000`
+
+Interpretation
+- This pass did not produce confident contradiction.
+- The contradiction axis remained coherent, but the refinement did not convert it into reliably confident opposing evidence.
+- Signal preservation also degraded: the final `cs=1.0` gate missed both modality floor targets.
+
+Conclusion
+- Archive this pass as a negative V2 exploration result.
+- Do not treat it as a new baseline or as evidence that the contradiction regime is solved.
