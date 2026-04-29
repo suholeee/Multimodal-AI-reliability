@@ -106,6 +106,11 @@ This writes figures, reports, and tables under `results/v2/`.
 - The strongest contradiction claim is supported by a saved single-seed sweep plus a later failed validation pass, not by a large benchmark campaign.
 - The final observability pass is explicitly a negative result and should not be treated as a production-ready contradiction regime.
 
+## Future Directions
+
+- Real biological datasets are extemely noisy, and oftentimes different experimental modalities indicate different directions. Thus, we have to test with real biological datasets. You can find possible candidates from 4DN Data Portal (https://data.4dnucleome.org).
+- Develop a new algorithm for efficient reconcilation -- How to improve the multimodal inference? There should be a better way to process contradicting information
+
 ## License
 
 MIT. See `LICENSE`.
