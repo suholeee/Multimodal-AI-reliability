@@ -50,9 +50,9 @@ Clean unimodal runs corrected an important contamination issue: modality-specifi
 | Model | Image only | Hi-C only | Both modalities | Contradiction acc | Action acc |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | Claude Haiku 4.5, none | `60/120 = 0.500` | `66/120 = 0.550` | `60/120 = 0.500` | `64/120 = 0.533` | `64/120 = 0.533` |
-| Claude Opus 4.7, none | `61/120 = 0.508` | `68/114 = 0.596` | `71/120 = 0.592` | `52/120 = 0.433` | `59/120 = 0.492` |
-| Claude Sonnet 4.6, high | `63/120 = 0.525` | `67/120 = 0.558` | `69/120 = 0.575` | `56/120 = 0.467` | `64/120 = 0.533` |
 | Claude Sonnet 4.6, none | `58/120 = 0.483` | `66/120 = 0.550` | `78/120 = 0.650` | `61/120 = 0.508` | `62/120 = 0.517` |
+| Claude Sonnet 4.6, high | `63/120 = 0.525` | `67/120 = 0.558` | `69/120 = 0.575` | `56/120 = 0.467` | `64/120 = 0.533` |
+| Claude Opus 4.7, none | `61/120 = 0.508` | `68/114 = 0.596` | `71/120 = 0.592` | `52/120 = 0.433` | `59/120 = 0.492` |
 
 The strongest V3 classification result is `claude-sonnet-4-6 / none / evidence_separation / scientific / both_modalities` at `78/120 = 0.650`. Its paired gain over clean image-only is `+0.167` with approximate 95% interval `[+0.041, +0.292]`; its paired gain over clean Hi-C-only is `+0.100` with interval `[-0.002, +0.202]`.
 
@@ -107,6 +107,31 @@ python scripts/run_v2_phase_diagram.py --profile debug --no-show
 
 This writes figures, reports, and tables under `results/v2/`.
 
+### Run a V3 agent benchmark
+
+The V3 runner is mock-safe by default:
+
+```bash
+python scripts/run_v3_agent_benchmark.py --profile smoke --mock
+```
+
+A single real API V3 smoke run for the final scientific-tool condition looks like:
+
+```bash
+python scripts/run_v3_agent_benchmark.py \
+  --profile smoke \
+  --model claude-sonnet-4-6 \
+  --input-condition both_modalities \
+  --prompt-policy evidence_separation \
+  --tool-level scientific \
+  --thinking none \
+  --seed 21 \
+  --real-api \
+  --confirm-api-call
+```
+
+The final V3 release repeats this over seeds `21..40`, model/thinking settings, and clean unimodal conditions (`--input-condition image_only` and `--input-condition hic_only`).
+
 ### Summarize the final V3 agent benchmark
 
 The final V3 release summary combines final both-modality roots and the clean unimodal add-on:
@@ -153,8 +178,9 @@ See `docs/v3_agent_benchmark.md` for the exact run commands and `results/v3/fina
 
 ## Future Directions
 
-- Real biological datasets are extemely noisy, and oftentimes different experimental modalities indicate different directions. Thus, we have to test with real biological datasets. You can find possible candidates from 4DN Data Portal (https://data.4dnucleome.org).
-- Develop a new algorithm for efficient reconcilation -- How to improve the multimodal inference? There should be a better way to process contradicting information
+- Real biological datasets are extremely noisy, and different experimental modalities often indicate different directions. Thus, this benchmark should be tested on real biological datasets. Possible candidates can be found through the 4DN Data Portal (https://data.4dnucleome.org).
+- Develop better algorithms for efficient reconciliation: the central modeling question is how to process contradicting information without collapsing to one modality or over-trusting superficial agreement.
+- V4 should move beyond one-shot classification toward a task-folder agent benchmark: give models a small public workspace of paired evidence files, require explicit evidence provenance, allow bounded tool use, and score not only final accuracy but also contradiction recall, action choice, abstention, and whether the model can explain which modality should be trusted.
 
 ## License
 
