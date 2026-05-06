@@ -23,3 +23,10 @@ build/
 *.npz
 !results/final/final_contradiction_samples.npz
 !results/v2/tables/v2_selective_curves.npz
+results/v3/api_cache/
+results/v3/**/tool_outputs/
+results/v3/runs/
+results/v3/stability/
+results/v3/performance/
+results/v3/prompt_ablation/
+results/v3/python_tools/

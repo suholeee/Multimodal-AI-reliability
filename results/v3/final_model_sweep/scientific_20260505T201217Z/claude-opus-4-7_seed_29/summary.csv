@@ -1,0 +1,5 @@
+model,prompt_policy,tool_level,input_condition,contradiction_strength,n,classification_accuracy,contradiction_accuracy,contradiction_binary_f1,recommended_action_accuracy,malformed_fraction,abstention_rate,ece_10bin,mean_latency_seconds,mean_tool_call_count,total_input_tokens,total_output_tokens
+claude-opus-4-7,evidence_separation,scientific,both_modalities,0.00,2,0.5,0.5,0.0,0.5,0.0,0.0,0.28,8.891537070274353,1.0,10978,767
+claude-opus-4-7,evidence_separation,scientific,both_modalities,0.50,2,0.0,0.0,0.0,0.0,0.0,0.0,0.76,8.343637943267822,1.0,10974,779
+claude-opus-4-7,evidence_separation,scientific,both_modalities,1.00,2,0.0,0.0,0.0,0.0,0.0,0.0,0.7050000000000001,8.740770697593689,1.0,10971,799
+claude-opus-4-7,evidence_separation,scientific,both_modalities,all,6,0.16666666666666666,0.16666666666666666,0.0,0.16666666666666666,0.0,0.0,0.5816666666666667,8.658648570378622,1.0,32923,2345

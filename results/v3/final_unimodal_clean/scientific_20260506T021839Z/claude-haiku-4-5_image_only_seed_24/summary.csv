@@ -1,0 +1,5 @@
+model,prompt_policy,tool_level,input_condition,contradiction_strength,n,classification_accuracy,contradiction_accuracy,contradiction_binary_f1,recommended_action_accuracy,malformed_fraction,abstention_rate,ece_10bin,mean_latency_seconds,mean_tool_call_count,total_input_tokens,total_output_tokens
+claude-haiku-4-5,evidence_separation,scientific,image_only,0.00,2,0.5,nan,nan,nan,0.0,0.0,0.21999999999999997,7.3328351974487305,2.0,6749,1341
+claude-haiku-4-5,evidence_separation,scientific,image_only,0.50,2,0.5,nan,nan,nan,0.0,0.0,0.25,6.353840947151184,2.0,6718,1233
+claude-haiku-4-5,evidence_separation,scientific,image_only,1.00,2,0.5,nan,nan,nan,0.0,0.0,0.21999999999999997,7.277161121368408,2.0,6745,1264
+claude-haiku-4-5,evidence_separation,scientific,image_only,all,6,0.5,nan,nan,nan,0.0,0.0,0.22999999999999998,6.987945755322774,2.0,20212,3838

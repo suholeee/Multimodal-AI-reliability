@@ -1,0 +1,13 @@
+model,thinking,prompt_policy,tool_level,input_condition,n_runs,n_samples,label_correct,label_total,label_accuracy,per_run_mean,per_run_sd,contradiction_correct,contradiction_total,contradiction_accuracy,action_correct,action_total,action_accuracy,notes
+claude-haiku-4-5,none,evidence_separation,scientific,both_modalities,20,120,60,120,0.500,0.500,0.000,64,120,0.533,64,120,0.533,
+claude-haiku-4-5,none,evidence_separation,scientific,hic_only,20,120,66,120,0.550,0.550,0.076,,,,,,,
+claude-haiku-4-5,none,evidence_separation,scientific,image_only,20,120,60,120,0.500,0.500,0.053,,,,,,,
+claude-opus-4-7,none,evidence_separation,scientific,both_modalities,20,120,71,120,0.592,0.592,0.207,52,120,0.433,59,120,0.492,
+claude-opus-4-7,none,evidence_separation,scientific,hic_only,19,114,68,114,0.596,0.596,0.218,,,,,,,seed_40_incomplete
+claude-opus-4-7,none,evidence_separation,scientific,image_only,20,120,61,120,0.508,0.508,0.179,,,,,,,
+claude-sonnet-4-6,high,evidence_separation,scientific,both_modalities,20,120,69,120,0.575,0.575,0.171,56,120,0.467,64,120,0.533,
+claude-sonnet-4-6,high,evidence_separation,scientific,hic_only,20,120,67,120,0.558,0.558,0.161,,,,,,,
+claude-sonnet-4-6,high,evidence_separation,scientific,image_only,20,120,63,120,0.525,0.525,0.121,,,,,,,
+claude-sonnet-4-6,none,evidence_separation,scientific,both_modalities,20,120,78,120,0.650,0.650,0.189,61,120,0.508,62,120,0.517,
+claude-sonnet-4-6,none,evidence_separation,scientific,hic_only,20,120,66,120,0.550,0.550,0.159,,,,,,,
+claude-sonnet-4-6,none,evidence_separation,scientific,image_only,20,120,58,120,0.483,0.483,0.073,,,,,,,

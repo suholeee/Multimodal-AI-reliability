@@ -1,0 +1,13 @@
+model,thinking,prompt_policy,tool_level,left_condition,right_condition,metric,delta,approx95_low,approx95_high,n,left_only,right_only,both,neither,notes
+claude-haiku-4-5,none,evidence_separation,scientific,both_modalities,hic_only,label_correct,-0.050,-0.089,-0.011,120,0,6,60,54,
+claude-haiku-4-5,none,evidence_separation,scientific,both_modalities,image_only,label_correct,0.000,-0.033,0.033,120,2,2,58,58,
+claude-haiku-4-5,none,evidence_separation,scientific,hic_only,image_only,label_correct,0.050,0.004,0.096,120,7,1,59,53,
+claude-opus-4-7,none,evidence_separation,scientific,both_modalities,hic_only,label_correct,0.009,-0.087,0.105,114,16,15,53,30,common_samples_only_seed_40_missing_from_hic
+claude-opus-4-7,none,evidence_separation,scientific,both_modalities,image_only,label_correct,0.083,-0.036,0.203,120,32,22,39,27,
+claude-opus-4-7,none,evidence_separation,scientific,hic_only,image_only,label_correct,0.079,-0.053,0.211,114,34,25,34,21,common_samples_only_seed_40_missing_from_hic
+claude-sonnet-4-6,none,evidence_separation,scientific,both_modalities,hic_only,label_correct,0.100,-0.002,0.202,120,26,14,52,28,
+claude-sonnet-4-6,none,evidence_separation,scientific,both_modalities,image_only,label_correct,0.167,0.041,0.292,120,41,21,37,21,
+claude-sonnet-4-6,none,evidence_separation,scientific,hic_only,image_only,label_correct,0.067,-0.085,0.218,120,47,39,19,15,
+claude-sonnet-4-6,high,evidence_separation,scientific,both_modalities,hic_only,label_correct,0.017,-0.079,0.112,120,18,16,51,35,
+claude-sonnet-4-6,high,evidence_separation,scientific,both_modalities,image_only,label_correct,0.050,-0.085,0.185,120,37,31,32,20,
+claude-sonnet-4-6,high,evidence_separation,scientific,hic_only,image_only,label_correct,0.033,-0.119,0.185,120,45,41,22,12,

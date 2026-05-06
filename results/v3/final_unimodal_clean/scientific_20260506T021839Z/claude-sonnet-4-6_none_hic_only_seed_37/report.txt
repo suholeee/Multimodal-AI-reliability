@@ -1,0 +1,15 @@
+V3 agent benchmark report
+profile=smoke
+real_api=True
+model_set=single
+input_condition=hic_only
+prompt_policy=evidence_separation
+tool_level=scientific
+thinking=none
+max_workers=1
+
+Summary rows
+model=claude-sonnet-4-6 prompt=evidence_separation tool=scientific input=hic_only cs=0.00 n=2 acc=1.000 contradiction_acc=nan action_acc=nan
+model=claude-sonnet-4-6 prompt=evidence_separation tool=scientific input=hic_only cs=0.50 n=2 acc=0.000 contradiction_acc=nan action_acc=nan
+model=claude-sonnet-4-6 prompt=evidence_separation tool=scientific input=hic_only cs=1.00 n=2 acc=0.500 contradiction_acc=nan action_acc=nan
+model=claude-sonnet-4-6 prompt=evidence_separation tool=scientific input=hic_only cs=all n=6 acc=0.500 contradiction_acc=nan action_acc=nan

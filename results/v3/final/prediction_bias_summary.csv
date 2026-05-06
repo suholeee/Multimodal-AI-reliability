@@ -1,0 +1,13 @@
+model,thinking,input_condition,n,true_normal,true_cancer,pred_normal,pred_cancer,normal_correct,cancer_correct,label_accuracy,summary
+claude-haiku-4-5,none,image_only,120,60,60,116,4,58,2,0.500,mostly_normal
+claude-haiku-4-5,none,hic_only,120,60,60,114,6,60,6,0.550,mostly_normal
+claude-haiku-4-5,none,both_modalities,120,60,60,120,0,60,0,0.500,always_normal
+claude-opus-4-7,none,image_only,120,60,60,51,69,26,35,0.508,cancer_leaning_but_near_chance
+claude-opus-4-7,none,hic_only,114,57,57,69,45,40,28,0.596,moderate_hic_signal
+claude-opus-4-7,none,both_modalities,120,60,60,47,73,29,42,0.592,cancer_leaning
+claude-sonnet-4-6,none,image_only,120,60,60,114,6,56,2,0.483,mostly_normal
+claude-sonnet-4-6,none,hic_only,120,60,60,32,88,19,47,0.550,cancer_heavy_hic
+claude-sonnet-4-6,none,both_modalities,120,60,60,62,58,40,38,0.650,balanced_best_classification
+claude-sonnet-4-6,high,image_only,120,60,60,103,17,53,10,0.525,mostly_normal
+claude-sonnet-4-6,high,hic_only,120,60,60,23,97,15,52,0.558,cancer_heavy_hic
+claude-sonnet-4-6,high,both_modalities,120,60,60,51,69,30,39,0.575,cancer_leaning
