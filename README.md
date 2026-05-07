@@ -3,7 +3,7 @@
 This repository releases a synthetic biology-focused multimodal learning study built around a shared latent chromatin-like system observed through paired image-like and genomic-like measurements. The motivating hypothesis was that combining modalities would improve classification accuracy and provide more robust decisions under disagreement. In the contradiction-focused setting studied here, that hypothesis did not hold cleanly: supervised fusion did not outperform the strongest unimodal baseline in the final observability pass, and zero-shot frontier agents improved classification only modestly while still failing to identify and act on modality contradiction. The result is a negative one, but a useful one: under these conditions, multimodal access did not by itself deliver reliable evidence reconciliation.
 
 <p align="center">
-  <img src="assets/summary_figure.svg" alt="Graphical abstract summarizing the multimodal reliability project" width="100%">
+  <img src="assets/summary_figure_multimodal-ai-reliability.png" alt="Graphical abstract summarizing the multimodal reliability project" width="100%">
 </p>
 
 <p align="center"><em>Graphical abstract: the project simulates paired biological views, tests simple fusion and zero-shot agentic reconciliation, and lays out a V4 terminal-agent evaluation plan for deciding when multimodal predictions should be trusted, flagged, or deferred.</em></p>
