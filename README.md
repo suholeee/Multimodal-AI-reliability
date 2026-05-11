@@ -1,12 +1,12 @@
 # Multimodal fusion for biological data: a study of failure modes
 
-This repository releases a synthetic biology-focused multimodal learning study built around a shared latent chromatin-like system observed through paired image-like and genomic-like measurements. The motivating hypothesis was that combining modalities would improve classification accuracy and provide more robust decisions under disagreement. In the contradiction-focused setting studied here, that hypothesis did not hold cleanly: supervised fusion did not outperform the strongest unimodal baseline in the final observability pass, and zero-shot frontier agents improved classification only modestly while still failing to identify and act on modality contradiction. The result is a negative one, but a useful one: under these conditions, multimodal access did not by itself deliver reliable evidence reconciliation.
+This repository releases a synthetic biology-focused multimodal learning study built around a shared latent chromatin-like system observed through paired image-like and genomic-like measurements. The motivating hypothesis was that combining modalities would improve classification accuracy and provide more robust decisions under disagreement. In the contradiction-focused setting studied here, that hypothesis did not hold cleanly: supervised fusion did not outperform the strongest unimodal baseline in the final observability pass, and zero-shot frontier/terminal agents improved classification only modestly while still failing to identify and act on modality contradiction. The result is a negative one, but a useful one: under these conditions, multimodal access did not by itself deliver reliable evidence reconciliation.
 
 <p align="center">
   <img src="assets/summary_figure_multimodal-ai-reliability.png" alt="Graphical abstract summarizing the multimodal reliability project" width="100%">
 </p>
 
-<p align="center"><em>Graphical abstract: the project simulates paired biological views, tests simple fusion and zero-shot agentic reconciliation, and lays out a V4 terminal-agent evaluation plan for deciding when multimodal predictions should be trusted, flagged, or deferred.</em></p>
+<p align="center"><em>Graphical abstract: the project simulates paired biological views, tests simple fusion and zero-shot agentic reconciliation, and evaluates whether V4 terminal agents know when multimodal predictions should be trusted, flagged, or deferred.</em></p>
 
 ## Motivation
 
@@ -19,12 +19,13 @@ The repository simulates one latent chromatin-like polymer system and then obser
 - an image-like optical rendering
 - a genomic contact-map representation
 
-Small unimodal and fusion classifiers are trained on paired samples from these views for a binary condition-classification task over the synthetic system. The two public experiment entry points are:
+Small unimodal and fusion classifiers are trained on paired samples from these views for a binary condition-classification task over the synthetic system. The public experiment entry points are:
 
 - `scripts/finalize_reproducible_evaluation.py`: stable baseline evaluation in the weak-contradiction regime
 - `scripts/run_v2_phase_diagram.py`: contradiction-focused V2 evaluation and validation pass
 - `scripts/run_v3_agent_benchmark.py`: controlled zero-shot agent benchmark over public image/Hi-C evidence
 - `scripts/summarize_v3_agent_runs.py`: aggregation of V3 agent runs across seeds, models, tools, and input conditions
+- `scripts/build_v4_agent_tasks.py`, `scripts/run_v4_terminal_agent_benchmark.py`, `scripts/evaluate_v4_agent_outputs.py`: task-folder Claude Code evaluation harness
 
 The main implementation lives in `src/`:
 
@@ -34,6 +35,7 @@ The main implementation lives in `src/`:
 - `fusion_safety.py`, `fusion_debug_utils.py`, `contradiction_analysis.py`: fusion evaluation and disagreement analysis
 - `v2_regime.py`, `v2_metrics.py`, `v2_policies.py`: stronger contradiction regime and routing/selective-policy analysis
 - `v3_agent_dataset.py`, `v3_claude_client.py`, `v3_visual_tools.py`, `v3_scientific_tools.py`, `v3_agent_metrics.py`: controlled V3 agent benchmark
+- `v4_terminal_agent.py`: V4 public task export, Claude Code command construction, and output evaluation utilities
 
 ## Key Finding
 
@@ -56,9 +58,9 @@ Clean unimodal runs corrected an important contamination issue: modality-specifi
 | Model | Image only | Hi-C only | Both modalities | Contradiction acc | Action acc |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | Claude Haiku 4.5, none | `60/120 = 0.500` | `66/120 = 0.550` | `60/120 = 0.500` | `64/120 = 0.533` | `64/120 = 0.533` |
-| Claude Sonnet 4.6, none | `58/120 = 0.483` | `66/120 = 0.550` | `78/120 = 0.650` | `61/120 = 0.508` | `62/120 = 0.517` |
-| Claude Sonnet 4.6, high | `63/120 = 0.525` | `67/120 = 0.558` | `69/120 = 0.575` | `56/120 = 0.467` | `64/120 = 0.533` |
 | Claude Opus 4.7, none | `61/120 = 0.508` | `68/114 = 0.596` | `71/120 = 0.592` | `52/120 = 0.433` | `59/120 = 0.492` |
+| Claude Sonnet 4.6, high | `63/120 = 0.525` | `67/120 = 0.558` | `69/120 = 0.575` | `56/120 = 0.467` | `64/120 = 0.533` |
+| Claude Sonnet 4.6, none | `58/120 = 0.483` | `66/120 = 0.550` | `78/120 = 0.650` | `61/120 = 0.508` | `62/120 = 0.517` |
 
 The strongest V3 classification result is `claude-sonnet-4-6 / none / evidence_separation / scientific / both_modalities` at `78/120 = 0.650`. Its paired gain over clean image-only is `+0.167` with approximate 95% interval `[+0.041, +0.292]`; its paired gain over clean Hi-C-only is `+0.100` with interval `[-0.002, +0.202]`.
 
@@ -66,9 +68,25 @@ That is meaningfully above chance, but it is not solved reconciliation. In the s
 
 The V3 result should therefore be read as a diagnostic zero-shot finding: models can use some biological priors from Hi-C-like evidence and sometimes benefit from both modalities, but they still mostly fail the harder task of detecting contradiction and choosing the right evidence-use policy. The curated final V3 summary is in `results/v3/final/`.
 
+### V4 Terminal-Agent Benchmark
+
+V4 asks whether a less controlled but more realistic terminal-agent workflow can do better. Claude Code was run over clean public task folders with visible polymer-image and/or Hi-C evidence, while hidden labels and evaluator metadata stayed outside the task folders. The compact final run `v4_compact_20260509T032302Z` scored `810` outputs: `90` samples x `3` models x `3` input conditions.
+
+| Model | Image only | Hi-C only | Both modalities | Contradiction acc | Action acc |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Haiku | `40/90 = 0.444` | `45/90 = 0.500` | `56/90 = 0.622` | `28/90 = 0.311` | `29/90 = 0.322` |
+| Sonnet | `43/90 = 0.478` | `45/90 = 0.500` | `51/90 = 0.567` | `30/90 = 0.333` | `34/90 = 0.378` |
+| Opus | `50/90 = 0.556` | `45/90 = 0.500` | `47/90 = 0.522` | `29/90 = 0.322` | `30/90 = 0.333` |
+
+The run is complete and parse-clean: `810/810` scored predictions, no malformed outputs, no timeouts, and no nonzero return codes. Haiku has the strongest both-modality classification result and the only clearly positive paired gain over image-only evidence: `both - image = +0.178`, approximate 95% interval `[+0.044, +0.311]`. Its paired gain over Hi-C-only is positive but uncertain: `+0.122`, interval `[-0.022, +0.267]`. Sonnet's gains are smaller and uncertain. Opus does not benefit from both modalities.
+
+The safety result remains negative. Hi-C-only accuracy is exactly `45/90 = 0.500` for all three models because their Hi-C predictions are effectively uncorrelated with the balanced hidden labels. In the both-modality condition, true strong contradictions are usually predicted as `none` (`27/30` for Haiku, `25/30` for Sonnet, `25/30` for Opus), and all models mostly default to `use_both` rather than selecting the more reliable modality.
+
+The final V4 analysis is in `results/v4/final_analysis_report.md`.
+
 ## What This Means
 
-This is not evidence that multimodal fusion never works in biological ML. It is evidence that, on this synthesized shared-latent dataset and within the tested supervised architectures and zero-shot agent protocols, multimodal access did not reliably deliver the expected gains once contradiction was made central to the task. The project therefore supports a narrower and more defensible claim: multimodal fusion should not be assumed to improve reliability just because two views are available.
+This is not evidence that multimodal fusion never works in biological ML. It is evidence that, on this synthesized shared-latent dataset and within the tested supervised architectures, controlled zero-shot agents, and terminal-agent workflows, multimodal access did not reliably deliver the expected gains once contradiction was made central to the task. The project therefore supports a narrower and more defensible claim: multimodal fusion should not be assumed to improve reliability just because two views are available.
 
 ## What's Needed Next
 
@@ -152,6 +170,50 @@ python scripts/summarize_v3_agent_runs.py \
 
 See `docs/v3_agent_benchmark.md` for the exact run commands and `results/v3/final/README.md` for the curated final result.
 
+### Reproduce the V4 terminal-agent evaluation
+
+V4 evaluates Claude Code on clean public task folders. The final compact run
+used `90` frozen samples and high effort for Haiku, Sonnet, and Opus. Build a
+new task set with:
+
+```bash
+RUN_ID="v4_compact_$(date -u +%Y%m%dT%H%M%SZ)"
+PUBLIC_ROOT="${TMPDIR:-/tmp}/v4_public_tasks/$RUN_ID"
+
+python scripts/build_v4_agent_tasks.py \
+  --profile compact_final \
+  --run-id "$RUN_ID" \
+  --public-root "$PUBLIC_ROOT" \
+  --evaluator-root "results/v4/evaluator/$RUN_ID" \
+  --conditions all
+
+python scripts/run_v4_terminal_agent_benchmark.py \
+  --task-root "$PUBLIC_ROOT" \
+  --output-root "results/v4/runs/${RUN_ID}_both" \
+  --models haiku,sonnet,opus \
+  --conditions both_modalities \
+  --effort high \
+  --resume
+
+python scripts/run_v4_terminal_agent_benchmark.py \
+  --task-root "$PUBLIC_ROOT" \
+  --output-root "results/v4/runs/${RUN_ID}_unimodal" \
+  --models haiku,sonnet,opus \
+  --conditions image_only,hic_only \
+  --effort high \
+  --resume
+
+python scripts/evaluate_v4_agent_outputs.py \
+  "results/v4/runs/${RUN_ID}_both" \
+  "results/v4/runs/${RUN_ID}_unimodal" \
+  --hidden-manifest "results/v4/evaluator/$RUN_ID/hidden_manifest.jsonl" \
+  --output-dir "results/v4/evaluations/${RUN_ID}_full_clean"
+```
+
+See `docs/v4_terminal_agent_benchmark.md` for the dry-run, preflight, resume,
+and usage-limit handling protocol. The completed final run is summarized in
+`results/v4/final_analysis_report.md`.
+
 ## Included Results
 
 - baseline summary: `results/reports/final_results_summary.txt`
@@ -172,6 +234,12 @@ See `docs/v3_agent_benchmark.md` for the exact run commands and `results/v3/fina
   - `results/v3/final/final_metrics.csv`
   - `results/v3/final/paired_deltas.csv`
   - `results/v3/final/prediction_bias_summary.csv`
+- final V4 terminal-agent summary:
+  - `results/v4/README.md`
+  - `results/v4/final_analysis_report.md`
+  - `results/v4/evaluations/v4_compact_20260509T032302Z_full_clean/summary.csv`
+  - `results/v4/evaluations/v4_compact_20260509T032302Z_full_clean/paired_deltas.csv`
+  - `results/v4/evaluations/v4_compact_20260509T032302Z_full_clean/confusion.json`
 
 ## Limitations
 
@@ -181,12 +249,13 @@ See `docs/v3_agent_benchmark.md` for the exact run commands and `results/v3/fina
 - The final observability pass is explicitly a negative result and should not be treated as a production-ready contradiction regime.
 - V3 is zero-shot and prompt/tool dependent. It does not provide labeled exemplars to the model, and `thinking=high` is confounded with Anthropic's required `temperature=1.0`.
 - V3 Opus Hi-C-only is missing one seed because the API run stopped early; it is reported as `n=114` and paired comparisons use the common sample set.
+- V4 is a terminal-agent product benchmark, not a deterministic model API benchmark. It is more realistic as workflow evaluation but less controlled than V3, and its findings should not be treated as prompt-invariant.
 
 ## Future Directions
 
 - Real biological datasets are extremely noisy, and different experimental modalities often indicate different directions. Thus, this benchmark should be tested on real biological datasets. Possible candidates can be found through the 4DN Data Portal (https://data.4dnucleome.org).
 - Develop better algorithms for efficient reconciliation: the central modeling question is how to process contradicting information without collapsing to one modality or over-trusting superficial agreement.
-- V4 should move beyond one-shot classification toward a task-folder agent benchmark: give models a small public workspace of paired evidence files, require explicit evidence provenance, allow bounded tool use, and score not only final accuracy but also contradiction recall, action choice, abstention, and whether the model can explain which modality should be trusted.
+- Move beyond one-shot classification toward richer agent benchmarks: require explicit evidence provenance, bounded tool use, abstention, contradiction recall, and explanations of which modality should be trusted.
 
 ## License
 

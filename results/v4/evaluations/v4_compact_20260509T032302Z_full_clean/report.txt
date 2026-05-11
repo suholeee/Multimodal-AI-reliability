@@ -1,0 +1,15 @@
+V4 Claude Code terminal-agent evaluation
+n_scored=810
+
+Summary
+model=haiku input=both_modalities n=90 acc=0.622 contradiction_acc=0.311 action_acc=0.322 malformed=0.000 timeout=0.000 cost_usd=2.806
+model=haiku input=hic_only n=90 acc=0.500 contradiction_acc=nan action_acc=nan malformed=0.000 timeout=0.000 cost_usd=4.904
+model=haiku input=image_only n=90 acc=0.444 contradiction_acc=nan action_acc=nan malformed=0.000 timeout=0.000 cost_usd=2.550
+model=opus input=both_modalities n=90 acc=0.522 contradiction_acc=0.322 action_acc=0.333 malformed=0.000 timeout=0.000 cost_usd=13.766
+model=opus input=hic_only n=90 acc=0.500 contradiction_acc=nan action_acc=nan malformed=0.000 timeout=0.000 cost_usd=13.462
+model=opus input=image_only n=90 acc=0.556 contradiction_acc=nan action_acc=nan malformed=0.000 timeout=0.000 cost_usd=12.917
+model=sonnet input=both_modalities n=90 acc=0.567 contradiction_acc=0.333 action_acc=0.378 malformed=0.000 timeout=0.000 cost_usd=16.400
+model=sonnet input=hic_only n=90 acc=0.500 contradiction_acc=nan action_acc=nan malformed=0.000 timeout=0.000 cost_usd=17.763
+model=sonnet input=image_only n=90 acc=0.478 contradiction_acc=nan action_acc=nan malformed=0.000 timeout=0.000 cost_usd=11.891
+
+Interpretation note: do not claim multimodal improvement unless clean image_only and hic_only rows exist for the same samples.

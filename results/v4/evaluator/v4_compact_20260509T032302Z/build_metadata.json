@@ -1,0 +1,17 @@
+{
+  "conditions": [
+    "both_modalities",
+    "image_only",
+    "hic_only"
+  ],
+  "evaluator_root": "results/v4/evaluator/v4_compact_20260509T032302Z",
+  "image_size": 64,
+  "max_seeds": 250,
+  "mode": "full",
+  "public_root": "v4_public_tasks/v4_compact_20260509T032302Z",
+  "run_id": "v4_compact_20260509T032302Z",
+  "samples_per_status": 30,
+  "seed_start": 101,
+  "split": "test",
+  "total_samples": 90
+}

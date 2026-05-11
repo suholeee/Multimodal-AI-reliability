@@ -1,0 +1,62 @@
+{
+  "haiku:action": {
+    "use_both->abstain": 1,
+    "use_both->use_both": 23,
+    "use_both->use_hic": 5,
+    "use_both->use_image": 1,
+    "use_hic->abstain": 2,
+    "use_hic->use_both": 24,
+    "use_hic->use_hic": 6,
+    "use_hic->use_image": 1,
+    "use_image->abstain": 1,
+    "use_image->use_both": 23,
+    "use_image->use_hic": 3
+  },
+  "haiku:contradiction": {
+    "none->none": 23,
+    "none->strong": 4,
+    "none->weak": 3,
+    "strong->none": 27,
+    "strong->weak": 3,
+    "weak->none": 20,
+    "weak->strong": 5,
+    "weak->weak": 5
+  },
+  "opus:action": {
+    "use_both->use_both": 24,
+    "use_both->use_hic": 6,
+    "use_hic->use_both": 27,
+    "use_hic->use_hic": 6,
+    "use_image->use_both": 22,
+    "use_image->use_hic": 5
+  },
+  "opus:contradiction": {
+    "none->none": 24,
+    "none->weak": 6,
+    "strong->none": 25,
+    "strong->strong": 1,
+    "strong->weak": 4,
+    "weak->none": 24,
+    "weak->strong": 2,
+    "weak->weak": 4
+  },
+  "sonnet:action": {
+    "use_both->use_both": 25,
+    "use_both->use_hic": 5,
+    "use_hic->use_both": 24,
+    "use_hic->use_hic": 8,
+    "use_hic->use_image": 1,
+    "use_image->use_both": 24,
+    "use_image->use_hic": 2,
+    "use_image->use_image": 1
+  },
+  "sonnet:contradiction": {
+    "none->none": 25,
+    "none->strong": 1,
+    "none->weak": 4,
+    "strong->none": 25,
+    "strong->weak": 5,
+    "weak->none": 25,
+    "weak->weak": 5
+  }
+}

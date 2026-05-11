@@ -4,12 +4,14 @@ This document links the repository to an agentic workflow for Codex, Claude Code
 
 ## Current Release State
 
-The release now contains two complementary negative/diagnostic tracks:
+The release now contains three complementary negative/diagnostic tracks:
 
 - V2 supervised PyTorch models: learned fusion did not reliably beat the strongest unimodal or policy baselines once contradiction observability became central.
 - V3 zero-shot agents: Sonnet none reached the strongest classification result at `78/120 = 0.650` with scientific tools and both modalities, but contradiction accuracy was only `61/120 = 0.508` and action accuracy was `62/120 = 0.517`.
+- V4 terminal agents: Haiku reached the strongest terminal-agent both-modality classification result at `56/90 = 0.622`, but Hi-C-only accuracy was exactly `45/90 = 0.500` for all models, contradiction accuracy stayed near one-third, and action accuracy stayed below `0.378`.
 
 For V3, use `results/v3/final/README.md` as the release-facing result. Raw smoke, stability, prompt-ablation, and Python-tool gate directories are provenance, not the headline result.
+For V4, use `results/v4/final_analysis_report.md` as the release-facing result. Raw run directories are provenance; the scored final comparison is `results/v4/evaluations/v4_compact_20260509T032302Z_full_clean/`.
 
 ## Target Capability
 
