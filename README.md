@@ -1,4 +1,4 @@
-# Multimodal fusion for biological data: a study of failure modes
+# Multimodal AI Reliability in Biological Reseasrch
 
 This repository releases a synthetic biology-focused multimodal learning study built around a shared latent chromatin-like system observed through paired image-like and genomic-like measurements. The motivating hypothesis was that combining modalities would improve classification accuracy and provide more robust decisions under disagreement. In the contradiction-focused setting studied here, that hypothesis did not hold cleanly: supervised fusion did not outperform the strongest unimodal baseline in the final observability pass, and zero-shot frontier/terminal agents improved classification only modestly while still failing to identify and act on modality contradiction. The result is a negative one, but a useful one: under these conditions, multimodal access did not by itself deliver reliable evidence reconciliation.
 
