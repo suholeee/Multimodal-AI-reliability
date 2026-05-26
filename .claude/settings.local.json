@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C /Users/suho/Documents/bio-multimodal-ai-reliability log --all --pretty=format:\"%H %an %ae %s\")",
+      "Bash(git -C /Users/suho/Documents/bio-multimodal-ai-reliability log --all --format=\"%b\")"
+    ]
+  }
+}
