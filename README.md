@@ -1,59 +1,65 @@
-# Multimodal fusion for biological data: a study of failure modes
+# Multimodal AI Reliability in Biological Research
 
-This repository releases a synthetic biology-focused multimodal learning study built around a shared latent chromatin-like system observed through paired image-like and genomic-like measurements. The motivating hypothesis was that combining modalities would improve classification accuracy and provide more robust decisions under disagreement. In the contradiction-focused setting studied here, that hypothesis did not hold cleanly: supervised fusion did not outperform the strongest unimodal baseline in the final observability pass, and zero-shot frontier/terminal agents improved classification only modestly while still failing to identify and act on modality contradiction. The result is a negative one, but a useful one: under these conditions, multimodal access did not by itself deliver reliable evidence reconciliation.
+Combining multiple experimental techniques is the gold standard of biological research, but it carries a hard challenge: different experimental modalities often tell different truths. This project asks whether AI can be trusted to reconcile that disagreement. Using a synthetic chromatin system observed through paired image-like and Hi-C-like measurements, it tests two questions — (1) does a multimodal dataset improve AI classification, and (2) can AI reliably recognize and reconcile contradiction between modalities? Across supervised baselines, zero-shot LLM API calls, and terminal-based agentic workflows, the answer to both is largely no. The headline is a counterintuitive one: **more information did not lead to better performance**, and **more capable models did not do better**.
 
 <p align="center">
   <img src="assets/summary_figure_multimodal-ai-reliability.png" alt="Graphical abstract summarizing the multimodal reliability project" width="100%">
 </p>
 
-<p align="center"><em>Graphical abstract: the project simulates paired biological views, tests simple fusion and zero-shot agentic reconciliation, and evaluates whether V4 terminal agents know when multimodal predictions should be trusted, flagged, or deferred.</em></p>
+<p align="center"><em>Graphical abstract. <strong>Problem:</strong> a microscopy-like image and a Hi-C-like contact map observe the same latent polymer — a proxy for normal vs. cancer chromatin — yet the two views can disagree. <strong>Method:</strong> a controlled evaluation stack tests supervised classifiers, zero-shot LLM API calls, and terminal-based agents on classification, contradiction detection, and reconciliation action. <strong>Result:</strong> multimodal access gives only modest, inconsistent gains, and contradiction and action accuracy stay near chance across model scale. <strong>Takeaway:</strong> more information does not guarantee better performance — reliable AI-for-biology must detect contradiction and decide when to trust, defer, or flag.</em></p>
 
 ## Motivation
 
-Combining biological modalities is attractive because different assays can expose different parts of the same underlying state. In practice, that creates a natural expectation that multimodal fusion should improve predictive accuracy, especially near ambiguous cases. This project tests that expectation in a controlled setting where both modalities are generated from the same latent polymer-based system, so disagreement can be studied without dataset-collection confounds.
+Combining experimental techniques is the gold standard of biological research, but different modalities frequently disagree. Two structural facts make this unavoidable:
 
-## Approach
+- You generally **cannot apply different experimental techniques to the same cells simultaneously**, so each modality measures a slightly different physical sample.
+- You often **cannot directly compare readouts across modalities**, because they are incomparable by nature.
 
-The repository simulates one latent chromatin-like polymer system and then observes it through two linked views:
+This is why clinicians built multidisciplinary forums such as **tumor boards** — venues whose entire purpose is to reconcile measurements that do not line up. Reliable reconciliation of modalities is therefore not a nicety but a prerequisite for safe and effective AI-for-biology.
 
-- an image-like optical rendering
-- a genomic contact-map representation
+This project tackles two questions:
 
-Small unimodal and fusion classifiers are trained on paired samples from these views for a binary condition-classification task over the synthetic system. The public experiment entry points are:
+1. **Can using a multimodal experimental dataset improve AI's performance?**
+2. **Can AI reliably recognize and reconcile contradictory situations between different experimental modalities?**
 
-- `scripts/finalize_reproducible_evaluation.py`: stable baseline evaluation in the weak-contradiction regime
-- `scripts/run_v2_phase_diagram.py`: contradiction-focused V2 evaluation and validation pass
-- `scripts/run_v3_agent_benchmark.py`: controlled zero-shot agent benchmark over public image/Hi-C evidence
-- `scripts/summarize_v3_agent_runs.py`: aggregation of V3 agent runs across seeds, models, tools, and input conditions
-- `scripts/build_v4_agent_tasks.py`, `scripts/run_v4_terminal_agent_benchmark.py`, `scripts/evaluate_v4_agent_outputs.py`: task-folder Claude Code evaluation harness
+## The Synthetic System
 
-The main implementation lives in `src/`:
+To study these questions without dataset-collection confounds, the repository uses a designed synthetic polymer system that resembles either **normal** or **cancer** chromatin. Cancer chromatin is known to adopt a more condensed topology, so cancer-like polymers are generated with added attractive interactions that compact their structure.
 
-- `polymer_generator.py`, `polymer_image_renderer.py`, `polymer_metrics.py`: synthetic data generation
-- `ml_dataset.py`: paired dataset construction
-- `ml_models.py`, `ml_train_eval.py`: model definitions and training loop
-- `fusion_safety.py`, `fusion_debug_utils.py`, `contradiction_analysis.py`: fusion evaluation and disagreement analysis
-- `v2_regime.py`, `v2_metrics.py`, `v2_policies.py`: stronger contradiction regime and routing/selective-policy analysis
-- `v3_agent_dataset.py`, `v3_claude_client.py`, `v3_visual_tools.py`, `v3_scientific_tools.py`, `v3_agent_metrics.py`: controlled V3 agent benchmark
-- `v4_terminal_agent.py`: V4 public task export, Claude Code command construction, and output evaluation utilities
+Each polymer is then observed through two linked experimental modalities derived from **the same shared latent conformation**:
 
-## Key Finding
+- an **image-like optical rendering**, mimicking a microscopy image
+- a **sequencing-like contact map**, mimicking Hi-C
 
-### Supervised PyTorch Baselines
+Because both views come from one underlying polymer, modality disagreement can be introduced and measured in a controlled way. AI systems are asked to classify each sample as normal vs. cancer under three input conditions: **image only**, **Hi-C only**, and **both modalities**.
 
-The stable baseline remains useful context, but it is not the headline result. In the five-seed baseline (`results/reports/final_results_summary.txt`), the best saved fusion variant (`fusion_frozen`) reached `0.760 +- 0.034` test accuracy versus `0.740 +- 0.047` for the genomic-only baseline and `0.655 +- 0.042` for the image-only baseline. That is a modest gain in a weak-contradiction regime, not strong evidence of robust multimodal complementarity.
+## Supervised Baselines
 
-The contradiction-focused V2 study is the main public result. In the saved contradiction sweep at `contradiction_strength=1.0`, image accuracy was `0.567`, genomic accuracy was `0.750`, and learned fusion accuracy was `0.767`, while the best full-coverage policy was `genomic_first` and policy gain over learned fusion was `0.000` (`results/v2/tables/v2_sweep_summary.csv`).
+To establish a baseline for this classification task on the synthetic dataset, supervised PyTorch classifiers were trained on each input condition (small CNN/MLP encoders with late-fusion concatenation, trained with cross-entropy). The pattern is clear:
 
-In the final observability pass, the hypothesis weakened further. At `contradiction_strength=1.0`, image accuracy was `0.583`, genomic accuracy was `0.550`, learned fusion accuracy was `0.517`, best-policy accuracy was also `0.517`, and the confident contradiction rate remained `0.000` at both `conf>=0.60` and `conf>=0.70` (`results/v2/reports/v2_validation_report.txt`).
+- all three conditions classified **significantly above chance** (chance = `0.500`)
+- but **naive fusion did not improve classification accuracy meaningfully**
 
-Inference from those saved metrics: the learned fusion model did not extract a stable complementary signal under the tested contradiction regime and behaved similarly to a single-branch policy, especially `genomic_first`, rather than resolving edge-case disagreement in a balanced way.
+In the saved five-seed baseline (`results/reports/final_results_summary.txt`), the best fusion variant reached `0.760 ± 0.034` test accuracy versus `0.740 ± 0.047` for Hi-C-only and `0.655 ± 0.042` for image-only. Fusion edged out the best single modality by only `~0.02` — a modest difference, not evidence of robust multimodal complementarity. The supervised baseline thus answers question (1) skeptically before LLMs are even introduced: combining modalities is not automatically better.
 
-### Zero-Shot V3 Agent Benchmark
+## LLM Evaluation: Adding the Contradiction Dimension
 
-V3 asks a different question: can frontier models classify and reconcile the same synthetic evidence zero-shot, without labeled examples or trained PyTorch weights? The final controlled V3 condition uses evidence-separation prompting, fixed non-leaky scientific tools, and matched seeds `21..40`.
+The study then moves to LLMs, using **three Claude models of increasing capability — Haiku 4.5, Sonnet 4.6, and Opus 4.7**.
 
-Clean unimodal runs corrected an important contamination issue: modality-specific labels reported inside a both-modality response are not clean unimodal accuracies. The final clean unimodal results are:
+For the LLM tests, a new dimension was added to the dataset: **contradiction**. These are cases where the image and Hi-C evidence tend to point in different directions (e.g., the image looks like normal chromatin while the Hi-C map looks cancerous). Based on contradiction level, the **both-modalities** dataset is composed of:
+
+- **⅓ well-matching** data (modalities agree)
+- **⅓ weak-contradiction** data
+- **⅓ strong-contradiction** data
+
+This makes reconciliation, not just classification, central to the task. Beyond classification accuracy, two reliability metrics are measured:
+
+- **Contradiction accuracy** — whether the LLM correctly flags contradictory cases
+- **Action accuracy** — for flagged cases, whether the LLM acts correctly to reconcile the contradiction (trust the more reliable modality, use both, or abstain)
+
+### Zero-Shot API Test (V3)
+
+The first LLM test used direct API calls with **no task context (zero-shot)**, relying primarily on naive visual inspection of the PNG-format data. The final clean results, over matched seeds `21..40`:
 
 | Model | Image only | Hi-C only | Both modalities | Contradiction acc | Action acc |
 | --- | ---: | ---: | ---: | ---: | ---: |
@@ -62,15 +68,19 @@ Clean unimodal runs corrected an important contamination issue: modality-specifi
 | Claude Sonnet 4.6, high | `63/120 = 0.525` | `67/120 = 0.558` | `69/120 = 0.575` | `56/120 = 0.467` | `64/120 = 0.533` |
 | Claude Sonnet 4.6, none | `58/120 = 0.483` | `66/120 = 0.550` | `78/120 = 0.650` | `61/120 = 0.508` | `62/120 = 0.517` |
 
-The strongest V3 classification result is `claude-sonnet-4-6 / none / evidence_separation / scientific / both_modalities` at `78/120 = 0.650`. Its paired gain over clean image-only is `+0.167` with approximate 95% interval `[+0.041, +0.292]`; its paired gain over clean Hi-C-only is `+0.100` with interval `[-0.002, +0.202]`.
+Three key findings:
 
-That is meaningfully above chance, but it is not solved reconciliation. In the same best condition, true strong contradictions were predicted as `none` in `23/33` cases, true weak contradictions were predicted as `none` in `15/21` cases, and the model never predicted `use_image` even though `30` samples had `use_image` as the evaluator action.
+1. **No consistent multimodal gain.** Most models classify both-modality inputs at roughly single-modality levels; there is no significant increase from having both modalities.
+2. **Contradiction and action accuracy hover near chance.** The reconciliation metrics fluctuate around `0.5` and never establish reliable contradiction detection.
+3. **Higher capability does not help.** Scaling from Haiku to Opus does not improve any of the measured accuracies.
 
-The V3 result should therefore be read as a diagnostic zero-shot finding: models can use some biological priors from Hi-C-like evidence and sometimes benefit from both modalities, but they still mostly fail the harder task of detecting contradiction and choosing the right evidence-use policy. The curated final V3 summary is in `results/v3/final/`.
+Because this test relied on naive visual inspection of PNGs, a more rigorous analysis might in principle change the result — which motivates the next experiment.
 
-### V4 Terminal-Agent Benchmark
+### Terminal-Agent Test (V4)
 
-V4 asks whether a less controlled but more realistic terminal-agent workflow can do better. Claude Code was run over clean public task folders with visible polymer-image and/or Hi-C evidence, while hidden labels and evaluator metadata stayed outside the task folders. The compact final run `v4_compact_20260509T032302Z` scored `810` outputs: `90` samples x `3` models x `3` input conditions.
+The same dataset was then evaluated with a **terminal-based agentic workflow (Claude Code)**, authorized to use any necessary Python libraries, and run on a **doubled polymer size** (`N = 48 → 96`) for finer structure. Instead of eyeballing PNGs, the agents wrote their own analysis code — for example, **computing the aspect ratio of the masked polymer image**, or **comparing diagonal vs. off-diagonal intensities of the Hi-C contact map** (PIL + NumPy, occasionally SciPy).
+
+The compact final run `v4_compact_20260509T032302Z` scored `810` outputs (`90` samples × `3` models × `3` conditions):
 
 | Model | Image only | Hi-C only | Both modalities | Contradiction acc | Action acc |
 | --- | ---: | ---: | ---: | ---: | ---: |
@@ -78,22 +88,36 @@ V4 asks whether a less controlled but more realistic terminal-agent workflow can
 | Sonnet | `43/90 = 0.478` | `45/90 = 0.500` | `51/90 = 0.567` | `30/90 = 0.333` | `34/90 = 0.378` |
 | Opus | `50/90 = 0.556` | `45/90 = 0.500` | `47/90 = 0.522` | `29/90 = 0.322` | `30/90 = 0.333` |
 
-The run is complete and parse-clean: `810/810` scored predictions, no malformed outputs, no timeouts, and no nonzero return codes. Haiku has the strongest both-modality classification result and the only clearly positive paired gain over image-only evidence: `both - image = +0.178`, approximate 95% interval `[+0.044, +0.311]`. Its paired gain over Hi-C-only is positive but uncertain: `+0.122`, interval `[-0.022, +0.267]`. Sonnet's gains are smaller and uncertain. Opus does not benefit from both modalities.
-
-The safety result remains negative. Hi-C-only accuracy is exactly `45/90 = 0.500` for all three models because their Hi-C predictions are effectively uncorrelated with the balanced hidden labels. In the both-modality condition, true strong contradictions are usually predicted as `none` (`27/30` for Haiku, `25/30` for Sonnet, `25/30` for Opus), and all models mostly default to `use_both` rather than selecting the more reliable modality.
-
-The final V4 analysis is in `results/v4/final_analysis_report.md`.
+Despite the more sophisticated, quantitative analysis methods and the larger polymers, **the results remained similar**: classification gains from both modalities are small and inconsistent, contradiction and action accuracy stay low (`~0.31–0.38`), and the strongest model (Opus) is not the best reconciler. The run is complete and parse-clean (`810/810` scored, no malformed outputs, no timeouts).
 
 ## What This Means
 
-This is not evidence that multimodal fusion never works in biological ML. It is evidence that, on this synthesized shared-latent dataset and within the tested supervised architectures, controlled zero-shot agents, and terminal-agent workflows, multimodal access did not reliably deliver the expected gains once contradiction was made central to the task. The project therefore supports a narrower and more defensible claim: multimodal fusion should not be assumed to improve reliability just because two views are available.
+The surprising point this project emphasizes is that **"more information does not lead to better performance,"** at least for AI applied to biological research. The common belief in AI-for-biology and AI-for-medicine is that *data is king*. This study suggests a correction: **"how to reconcile existing data" is as important as "collecting more data."**
+
+Equally striking, **better models did not show better performance.** Capability scaling from Haiku to Sonnet to Opus did not improve classification, contradiction detection, or reconciliation action. This points to a **fundamental gap in LLMs' biological reasoning over multimodal datasets that capability scaling alone does not close.**
+
+## Limitations
+
+The main limitations concern the dataset:
+
+- **It is a synthetic benchmark with over-represented features.** Realistic evaluation needs **real paired image and Hi-C datasets that share the same cell state**, ideally measured by the same laboratory.
+- **The polymer is too small** to capture the subtle features that distinguish normal from cancer chromatin. This study used `N = 96` monomers due to computational cost, whereas actual chromosomes are on the `~10^6` base-pair scale.
+
+Beyond the dataset, the LLM evaluation itself can be improved substantially. Well-framed prompts and **few-shot tasks** (e.g., explicitly providing the Python libraries widely used to analyze images and Hi-C maps), together with **sweeps over reasoning levels and temperature**, would give a more systematic and robust picture.
+
+Additional methodological notes: V3 is zero-shot and prompt/tool dependent, and its `thinking=high` setting is confounded with Anthropic's required `temperature=1.0`; V3 Opus Hi-C-only is reported as `n=114` because one seed stopped early; V4 is a terminal-agent product benchmark rather than a deterministic model-API benchmark, so its findings should not be treated as prompt-invariant.
 
 ## What's Needed Next
 
-- evaluation on real biological datasets with measured contradiction rates between modalities
-- ablations that isolate which architectural components mediate branch dominance or modality collapse
-- fusion strategies that explicitly model contradiction rather than assuming complementarity
-- direct measurement of when fused predictions should be deferred, abstained, or flagged
+If a more systematic design on **real datasets** still confirms these pilot results, the obvious next step is: **how do we make AI systems detect contradictions and decide when to trust, defer, or flag, as they process multimodal data?** This is a load-bearing capability for building safe and reliable AI-for-biology.
+
+Concretely:
+
+- Test this benchmark on **real biological data** — candidate paired datasets can be found through the [4DN Data Portal](https://data.4dnucleome.org).
+- Develop algorithms for **efficient reconciliation** that process conflicting information without collapsing to one modality or over-trusting superficial agreement.
+- Move beyond one-shot classification toward agent benchmarks that require explicit evidence provenance, abstention, contradiction recall, and a justified choice of which modality to trust.
+
+A personal view: closing the reconciliation gap will likely require **interpretability experiments — from chain-of-thought analysis to finer mechanistic tools — to fully understand and improve how LLMs reconcile multimodal evidence.**
 
 ## How to Reproduce
 
@@ -109,7 +133,7 @@ pip install -r requirements.txt
 
 No external dataset is bundled. The released experiments generate synthetic paired data at runtime from the polymer sandbox. See `data/README.md` for the expected repository convention.
 
-### Run the stable baseline
+### Run the supervised baseline
 
 ```bash
 python scripts/finalize_reproducible_evaluation.py
@@ -117,7 +141,7 @@ python scripts/finalize_reproducible_evaluation.py
 
 This writes baseline artifacts under `results/final/` and `results/reports/`.
 
-### Run the contradiction-focused V2 evaluation
+### Run the contradiction-focused regime analysis
 
 ```bash
 python scripts/run_v2_phase_diagram.py --profile default --no-show
@@ -131,7 +155,7 @@ python scripts/run_v2_phase_diagram.py --profile debug --no-show
 
 This writes figures, reports, and tables under `results/v2/`.
 
-### Run a V3 agent benchmark
+### Run a zero-shot V3 agent benchmark
 
 The V3 runner is mock-safe by default:
 
@@ -139,7 +163,7 @@ The V3 runner is mock-safe by default:
 python scripts/run_v3_agent_benchmark.py --profile smoke --mock
 ```
 
-A single real API V3 smoke run for the final scientific-tool condition looks like:
+A single real-API V3 smoke run for the final scientific-tool condition looks like:
 
 ```bash
 python scripts/run_v3_agent_benchmark.py \
@@ -157,8 +181,6 @@ python scripts/run_v3_agent_benchmark.py \
 The final V3 release repeats this over seeds `21..40`, model/thinking settings, and clean unimodal conditions (`--input-condition image_only` and `--input-condition hic_only`).
 
 ### Summarize the final V3 agent benchmark
-
-The final V3 release summary combines final both-modality roots and the clean unimodal add-on:
 
 ```bash
 python scripts/summarize_v3_agent_runs.py \
@@ -216,16 +238,16 @@ and usage-limit handling protocol. The completed final run is summarized in
 
 ## Included Results
 
-- baseline summary: `results/reports/final_results_summary.txt`
-- baseline plots:
+- supervised baseline summary: `results/reports/final_results_summary.txt`
+- supervised baseline plots:
   - `results/final/final_accuracy_summary.png`
   - `results/final/final_contradiction_summary.png`
-- contradiction-focused figure: `results/v2/figures/v2_contradiction_sweep.png`
-- contradiction-focused reports:
+- contradiction-regime figure: `results/v2/figures/v2_contradiction_sweep.png`
+- contradiction-regime reports:
   - `results/v2/reports/v2_main_findings.txt`
   - `results/v2/reports/v2_validation_report.txt`
   - `results/v2/reports/v2_observability_pass_negative_result.txt`
-- contradiction-focused tables:
+- contradiction-regime tables:
   - `results/v2/tables/v2_sweep_metrics.csv`
   - `results/v2/tables/v2_sweep_summary.csv`
   - `results/v2/tables/v2_validation_metrics.csv`
@@ -240,22 +262,6 @@ and usage-limit handling protocol. The completed final run is summarized in
   - `results/v4/evaluations/v4_compact_20260509T032302Z_full_clean/summary.csv`
   - `results/v4/evaluations/v4_compact_20260509T032302Z_full_clean/paired_deltas.csv`
   - `results/v4/evaluations/v4_compact_20260509T032302Z_full_clean/confusion.json`
-
-## Limitations
-
-- The dataset is synthetic.
-- The release centers one architecture family and a limited set of routing policies.
-- The strongest contradiction claim is supported by a saved single-seed sweep plus a later failed validation pass, not by a large benchmark campaign.
-- The final observability pass is explicitly a negative result and should not be treated as a production-ready contradiction regime.
-- V3 is zero-shot and prompt/tool dependent. It does not provide labeled exemplars to the model, and `thinking=high` is confounded with Anthropic's required `temperature=1.0`.
-- V3 Opus Hi-C-only is missing one seed because the API run stopped early; it is reported as `n=114` and paired comparisons use the common sample set.
-- V4 is a terminal-agent product benchmark, not a deterministic model API benchmark. It is more realistic as workflow evaluation but less controlled than V3, and its findings should not be treated as prompt-invariant.
-
-## Future Directions
-
-- Real biological datasets are extremely noisy, and different experimental modalities often indicate different directions. Thus, this benchmark should be tested on real biological datasets. Possible candidates can be found through the 4DN Data Portal (https://data.4dnucleome.org).
-- Develop better algorithms for efficient reconciliation: the central modeling question is how to process contradicting information without collapsing to one modality or over-trusting superficial agreement.
-- Move beyond one-shot classification toward richer agent benchmarks: require explicit evidence provenance, bounded tool use, abstention, contradiction recall, and explanations of which modality should be trusted.
 
 ## License
 
